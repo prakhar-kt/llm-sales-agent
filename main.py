@@ -5,31 +5,35 @@ import asyncio
 import nest_asyncio
 
 from config import model
-from instructions import instructions_email_picker
-from tools import (
-    send_email,
-    professional_sales_tool,
-    witty_sales_tool,
-    concise_sales_tool,
-)
+from instructions import email_instructions, sales_manager_instructions
+from tools import email_tools, sales_tools
 
 
 nest_asyncio.apply()
 load_dotenv(override=True)
 
 
-def main():
+async def main():
 
-    message = "Send a cold sales email addressed to 'Dear CEO'"
+    emailer_agent = Agent(
+        name="Email manager",
+        instructions=email_instructions,
+        model=model,
+        tools=email_tools,
+        handoff_description="Convert an email to HTML and send it",
+    )
 
-    tools = [professional_sales_tool, witty_sales_tool, concise_sales_tool, send_email]
+    handoffs = emailer_agent
 
     sales_manager = Agent(
         name="Sales Manager",
-        instructions=instructions_email_picker,
-        tools=tools,
+        instructions=sales_manager_instructions,
+        tools=sales_tools,
         model=model,
+        handoffs=handoffs,
     )
+
+    message = "Send out a cold sales email addressed to Dear CEO"
 
     with trace("Sales Manager"):
         result = await Runner.run(sales_manager, message)

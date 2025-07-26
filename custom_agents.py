@@ -4,7 +4,9 @@ from instructions import (
     instructions_professional,
     instructions_concise,
     instructions_witty,
-    instructions_email_picker,
+    subject_instructions,
+    html_instructions,
+    email_instructions,
 )
 
 
@@ -20,6 +22,12 @@ sales_agent_concise = Agent(
     name="Busy Sales Agent", instructions=instructions_concise, model=model
 )
 
-email_picker = Agent(
-    name="email_picker", instructions=instructions_email_picker, model=model
+email_picker = Agent(name="Email picker", instructions=email_instructions, model=model)
+
+subject_writer = Agent(
+    name="Email subject writer", instructions=subject_instructions, model=model
+)
+
+html_converter = Agent(
+    name="HTML email body converter", instructions=html_instructions, model=model
 )
